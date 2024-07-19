@@ -4,6 +4,7 @@ import {
   faTrash,
   faNotesMedical,
   faBook,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -12,7 +13,7 @@ import NoteBody from "../Components/NoteBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useContext, useEffect } from "react";
 import { Context } from "../index";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
 import SelectNotemodal from "../Components/SelectNoteModal";
 import AddNoteModal from "../Components/AddNoteModal";
 
@@ -36,8 +37,13 @@ const FolderPage = () => {
   const [filteredNotes, setfilteredNotes] = useState([]);
   const [AddNote, setAddNote] = useState(false);
   const [AddNoteOpen, setAddNoteOpen] = useState(false);
-  const { setNotes, Notes, handleNoteUpdate, handleNoteDelete } =
-    useContext(Context);
+  const {
+    setNotes,
+    Notes,
+    handleNoteUpdate,
+    handleNoteDelete,
+    setIsAuthenticated,
+  } = useContext(Context);
   const { name, id } = useParams();
   useEffect(() => {
     const filtered = Notes.filter((note) => {
@@ -51,6 +57,20 @@ const FolderPage = () => {
   const handleNoteAdded = (newNote) => {
     setNotes((prevNotes) => [newNote, ...prevNotes]);
   };
+
+  const handleLogout = async () => {
+    try {
+      const { data } = await axios.get(
+        "https://noti-fy-backend.onrender.com/api/v1/user/logout",
+        { withCredentials: true }
+      );
+
+      setIsAuthenticated(false);
+      navigateTo("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="flex">
       <SideBarComponent>
@@ -58,6 +78,12 @@ const FolderPage = () => {
           <SidebarItem
             icon={<FontAwesomeIcon icon={faNotesMedical} />}
             text="Home"
+          />
+        </Link>
+        <Link to={"/"}>
+          <SidebarItem
+            icon={<FontAwesomeIcon icon={faUser} />}
+            text="Profile"
           />
         </Link>
         <Link to={"/archieve"}>
@@ -69,6 +95,9 @@ const FolderPage = () => {
         <Link to={"/trash"}>
           <SidebarItem icon={<FontAwesomeIcon icon={faTrash} />} text="Trash" />
         </Link>
+        <div className="logout flex" onClick={handleLogout}>
+          <SidebarItem icon={<LogOut />} text="Logout" />
+        </div>
       </SideBarComponent>
 
       <div className="w-full">

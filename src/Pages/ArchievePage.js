@@ -4,6 +4,7 @@ import {
   faTrash,
   faNotesMedical,
   faBook,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -12,7 +13,7 @@ import NoteBody from "../Components/NoteBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useContext, useEffect } from "react";
 import { Context } from "../index";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
 import SelectNotemodal from "../Components/SelectNoteModal";
 import AddNoteModal from "../Components/AddNoteModal";
 import DeletedNote from "../Components/DeletedNote";
@@ -39,7 +40,8 @@ const ArchievePage = () => {
   //   const [filteredNotes, setfilteredNotes] = useState([]);
   const [AddNote, setAddNote] = useState(false);
   const [AddNoteOpen, setAddNoteOpen] = useState(false);
-  const { setNotes, Notes, setTrashedNotes } = useContext(Context);
+  const { setNotes, Notes, setTrashedNotes, setIsAuthenticated } =
+    useContext(Context);
   const { name, id } = useParams();
 
   //   useEffect(() => {
@@ -83,12 +85,23 @@ const ArchievePage = () => {
     setNotes(filteredNotes);
   };
 
+  const handleLogout = async () => {
+    try {
+      const { data } = await axios.get(
+        "https://noti-fy-backend.onrender.com/api/v1/user/logout",
+        { withCredentials: true }
+      );
+
+      setIsAuthenticated(false);
+      navigateTo("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleNoteAdded = (newNote) => {
     setTrashedNotes((prevNotes) => [newNote, ...prevNotes]);
   };
-
-  //   const fil = filterNotes(search);
-  //   console.log(fil);
 
   const handleSearch = (text) => {
     setSearchTerm(text);
@@ -102,6 +115,12 @@ const ArchievePage = () => {
             text="Home"
           />
         </Link>
+        <Link to={"/"}>
+          <SidebarItem
+            icon={<FontAwesomeIcon icon={faUser} />}
+            text="Profile"
+          />
+        </Link>
         <Link to={"/archieve"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faBook} />}
@@ -111,18 +130,21 @@ const ArchievePage = () => {
         <Link to={"/trash"}>
           <SidebarItem icon={<FontAwesomeIcon icon={faTrash} />} text="Trash" />
         </Link>
+        <div className="logout flex" onClick={handleLogout}>
+          <SidebarItem icon={<LogOut />} text="Logout" />
+        </div>
       </SideBarComponent>
 
       <div className="w-full">
         <HeaderComponent onSearch={handleSearch} />
-        <div className="bg-home h-auto p-[40px] rounded-3xl">
+        <div className="bg-home h-auto p-[15px] sm:p-[40px] rounded-3xl">
           <div className="my-heading flex gap-2 items-center ">
             <Link to={"/"}>
               <button className="border-4 rounded-full border-gray-200">
                 <ArrowLeft size={30} />
               </button>
             </Link>
-            <h1 className="text-4xl">Archived Notes</h1>
+            <h1 className="sm:text-4xl text-2xl">Archived Notes</h1>
             <div className="button relative">
               <button
                 className="bg-pink-400 text-white rounded-lg px-[3px] py-[6px] "
@@ -140,7 +162,7 @@ const ArchievePage = () => {
             </div>
           </div>
 
-          <div className="notes-container mt-5 flex gap-[25px] flex-wrap">
+          <div className="notes-container mt-5 flex gap-3 sm:gap-[25px] flex-wrap sm:justify-normal justify-center">
             {filteredNotes && filteredNotes.length > 0
               ? filteredNotes.map((note) => {
                   return (

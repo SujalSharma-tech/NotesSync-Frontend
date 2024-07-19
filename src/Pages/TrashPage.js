@@ -4,6 +4,7 @@ import {
   faTrash,
   faNotesMedical,
   faBook,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -12,7 +13,7 @@ import NoteBody from "../Components/NoteBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useContext, useEffect } from "react";
 import { Context } from "../index";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
 import SelectNotemodal from "../Components/SelectNoteModal";
 import AddNoteModal from "../Components/AddNoteModal";
 import DeletedNote from "../Components/DeletedNote";
@@ -38,7 +39,8 @@ const TrashPage = () => {
   const [filteredNotes, setfilteredNotes] = useState([]);
   const [AddNote, setAddNote] = useState(false);
   const [AddNoteOpen, setAddNoteOpen] = useState(false);
-  const { setNotes, TrashedNotes, setTrashedNotes } = useContext(Context);
+  const { setNotes, TrashedNotes, setTrashedNotes, setIsAuthenticated } =
+    useContext(Context);
   const { name, id } = useParams();
   useEffect(() => {
     const filtered = TrashedNotes.filter((note) => {
@@ -75,6 +77,19 @@ const TrashPage = () => {
       console.error("Error restoring note:", error);
     }
   };
+  const handleLogout = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:4000/api/v1/user/logout",
+        { withCredentials: true }
+      );
+
+      setIsAuthenticated(false);
+      navigateTo("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleNoteAdded = (newNote) => {
     setTrashedNotes((prevNotes) => [newNote, ...prevNotes]);
@@ -88,6 +103,12 @@ const TrashPage = () => {
             text="Home"
           />
         </Link>
+        <Link to={"/"}>
+          <SidebarItem
+            icon={<FontAwesomeIcon icon={faUser} />}
+            text="Profile"
+          />
+        </Link>
         <Link to={"/archieve"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faBook} />}
@@ -97,18 +118,21 @@ const TrashPage = () => {
         <Link to={"/trash"}>
           <SidebarItem icon={<FontAwesomeIcon icon={faTrash} />} text="Trash" />
         </Link>
+        <div className="logout flex" onClick={handleLogout}>
+          <SidebarItem icon={<LogOut />} text="Logout" />
+        </div>
       </SideBarComponent>
 
       <div className="w-full">
         <HeaderComponent />
-        <div className="bg-home h-auto p-[40px] rounded-3xl">
+        <div className="bg-home h-auto p-[15px] sm:p-[40px] rounded-3xl">
           <div className="my-heading flex gap-2 items-center ">
             <Link to={"/"}>
               <button className="border-4 rounded-full border-gray-200">
                 <ArrowLeft size={30} />
               </button>
             </Link>
-            <h1 className="text-4xl">Trash Notes</h1>
+            <h1 className="sm:text-4xl text-2xl">Trash Notes</h1>
             <div className="button relative">
               <button
                 className="bg-pink-400 text-white rounded-lg px-[3px] py-[6px] "
@@ -126,7 +150,7 @@ const TrashPage = () => {
             </div>
           </div>
 
-          <div className="notes-container mt-5 flex gap-[25px] flex-wrap">
+          <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-normal">
             {filteredNotes && filteredNotes.length > 0
               ? filteredNotes.map((note) => {
                   return (

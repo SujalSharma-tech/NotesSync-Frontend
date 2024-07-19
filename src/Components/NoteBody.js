@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { Archive, Edit, Pin, Trash2 } from "lucide-react";
+import { Archive, Edit, Pin, Trash2, BookHeart } from "lucide-react";
 import { useState } from "react";
 
 const NoteBody = ({ note, onUpdate, onDelete }) => {
@@ -22,9 +22,13 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [noteTitle, setNoteTitle] = useState(note.title);
   const [noteContent, setNoteContent] = useState(note.content);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isArchiving, setIsArchiving] = useState(false);
+  const [isPinning, setIsPinning] = useState(false);
 
   const togglePinned = async (e) => {
     e.stopPropagation();
+    setIsPinning(true);
     const previousState = isPinned;
     setIspinned(!isPinned);
     try {
@@ -40,11 +44,15 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
     } catch (err) {
       console.log(err);
       setIspinned(previousState);
+      setIsPinning(false);
+    } finally {
+      setIsPinning(false);
     }
   };
 
   const toggleArchived = async (e) => {
     e.stopPropagation();
+    setIsArchiving(true);
     const previousState = isArchived;
     setIsArchived(!isArchived);
     try {
@@ -60,11 +68,15 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
     } catch (err) {
       console.log(err);
       setIsArchived(previousState);
+      setIsArchiving(false);
+    } finally {
+      setIsArchiving(false);
     }
   };
 
   const toggleDelete = async (e) => {
     e.stopPropagation();
+    setIsDeleting(true);
     try {
       const { data } = await axios.patch(
         `https://noti-fy-backend.onrender.com/api/v1/note/updatestatus/${note._id}`,
@@ -77,6 +89,9 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
       onDelete(data.note);
     } catch (err) {
       console.log(err);
+      setIsDeleting(false);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -130,8 +145,13 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
                 <span className="tooltip">{`${
                   note.isPinned ? "Unpin" : "Pin"
                 }`}</span>
-                <Pin fill={`${note.isPinned ? "black" : "none"}`} />
+                {isPinning ? (
+                  ""
+                ) : (
+                  <Pin fill={`${note.isPinned ? "black" : "none"}`} />
+                )}
               </div>
+              {isPinning && <div className="loader"></div>}
             </button>
             <button
               className="note_delete_button note_action_button"
@@ -139,8 +159,9 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
             >
               <div className="note_delete">
                 <span className="tooltip">Delete</span>
-                <Trash2 />
+                {isDeleting ? "" : <Trash2 />}
               </div>
+              {isDeleting && <div className="loader"></div>}
             </button>
             <button
               className="note_archive_button note_action_button"
@@ -150,8 +171,15 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
                 <span className="tooltip">{`${
                   note.isArchived ? "Unarchive" : "Archive"
                 }`}</span>
-                <Archive fill={`${note.isArchived ? "cadetblue" : "none"}`} />
+                {isArchiving ? (
+                  ""
+                ) : (
+                  <BookHeart
+                    fill={`${note.isArchived ? "cadetblue" : "none"}`}
+                  />
+                )}
               </div>
+              {isArchiving && <div className="loader"></div>}
             </button>
           </div>
         </div>
@@ -159,11 +187,15 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] h-[90%] flex flex-col relative">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] h-[90%] flex flex-col relative overflow-hidden">
             {!isEditing ? (
               <>
-                <h2 className="text-2xl mb-4">{noteTitle}</h2>
-                <p className="mb-4 whitespace-pre">{noteContent}</p>
+                <h2 className="text-2xl mb-4 whitespace-pre-line">
+                  {noteTitle}
+                </h2>
+                <p className="mb-4 whitespace-pre-line h-[83%] overflow-y-scroll">
+                  {noteContent}
+                </p>
                 <div className="flex justify-end absolute bottom-3 right-4">
                   <button
                     className="bg-blue-500 text-white px-4 py-2 rounded"

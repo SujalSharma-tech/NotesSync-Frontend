@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import ReactDom from "react-dom/client";
 import App from "./App";
+import { useNavigate } from "react-router-dom";
 
 export const Context = createContext({
   isAuthenticated: false,

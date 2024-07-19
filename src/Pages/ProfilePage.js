@@ -1,5 +1,5 @@
 import SideBarComponent, { SidebarItem } from "../Components/SideBarComponent";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   faTrash,
   faNotesMedical,
@@ -18,6 +18,7 @@ import axios from "axios";
 
 const ProfilePage = () => {
   const { user, Notes, setIsAuthenticated } = useContext(Context);
+  const navigateTo = useNavigate();
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(

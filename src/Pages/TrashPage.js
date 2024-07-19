@@ -1,5 +1,5 @@
 import SideBarComponent, { SidebarItem } from "../Components/SideBarComponent";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   faTrash,
   faNotesMedical,
@@ -42,6 +42,7 @@ const TrashPage = () => {
   const { setNotes, TrashedNotes, setTrashedNotes, setIsAuthenticated } =
     useContext(Context);
   const { name, id } = useParams();
+  const navigateTo = useNavigate();
   useEffect(() => {
     const filtered = TrashedNotes.filter((note) => {
       if (note?.isTrashed) {
@@ -54,7 +55,7 @@ const TrashPage = () => {
   const handleNoteRestore = async (noteId) => {
     try {
       const { data } = await axios.patch(
-        `http://localhost:4000/api/v1/note/${noteId}/restore`,
+        `https://noti-fy-backend.onrender.com/api/v1/note/${noteId}/restore`,
         { isTrashed: false },
         { withCredentials: true }
       );
@@ -67,7 +68,7 @@ const TrashPage = () => {
   const handleNoteDelete = async (noteId) => {
     try {
       const { data } = await axios.delete(
-        `http://localhost:4000/api/v1/note/deletenote/${noteId}`,
+        `https://noti-fy-backend.onrender.com/api/v1/note/deletenote/${noteId}`,
         { withCredentials: true }
       );
       // setNotes((prev) => [data.note, ...prev]);
@@ -80,7 +81,7 @@ const TrashPage = () => {
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:4000/api/v1/user/logout",
+        "https://noti-fy-backend.onrender.com/api/v1/user/logout",
         { withCredentials: true }
       );
 

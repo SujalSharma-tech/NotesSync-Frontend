@@ -1,5 +1,5 @@
 import SideBarComponent, { SidebarItem } from "../Components/SideBarComponent";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   faTrash,
   faNotesMedical,
@@ -43,6 +43,7 @@ const ArchievePage = () => {
   const { setNotes, Notes, setTrashedNotes, setIsAuthenticated } =
     useContext(Context);
   const { name, id } = useParams();
+  const navigateTo = useNavigate();
 
   //   useEffect(() => {
   //     const filtered = Notes.filter((note) => {

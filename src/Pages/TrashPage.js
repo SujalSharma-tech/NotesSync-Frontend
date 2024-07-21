@@ -39,8 +39,13 @@ const TrashPage = () => {
   const [filteredNotes, setfilteredNotes] = useState([]);
   const [AddNote, setAddNote] = useState(false);
   const [AddNoteOpen, setAddNoteOpen] = useState(false);
-  const { setNotes, TrashedNotes, setTrashedNotes, setIsAuthenticated } =
-    useContext(Context);
+  const {
+    setNotes,
+    TrashedNotes,
+    setTrashedNotes,
+    setIsAuthenticated,
+    setUser,
+  } = useContext(Context);
   const { name, id } = useParams();
   const navigateTo = useNavigate();
   useEffect(() => {
@@ -55,7 +60,7 @@ const TrashPage = () => {
   const handleNoteRestore = async (noteId) => {
     try {
       const { data } = await axios.patch(
-        `https://noti-fy-backend.onrender.com/api/v1/note/${noteId}/restore`,
+        `http://localhost:4000/api/v1/note/${noteId}/restore`,
         { isTrashed: false },
         { withCredentials: true }
       );
@@ -68,7 +73,7 @@ const TrashPage = () => {
   const handleNoteDelete = async (noteId) => {
     try {
       const { data } = await axios.delete(
-        `https://noti-fy-backend.onrender.com/api/v1/note/deletenote/${noteId}`,
+        `http://localhost:4000/api/v1/note/deletenote/${noteId}`,
         { withCredentials: true }
       );
       // setNotes((prev) => [data.note, ...prev]);
@@ -81,12 +86,13 @@ const TrashPage = () => {
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(
-        "https://noti-fy-backend.onrender.com/api/v1/user/logout",
+        "http://localhost:4000/api/v1/user/logout",
         { withCredentials: true }
       );
 
       setIsAuthenticated(false);
       navigateTo("/login");
+      setUser({});
     } catch (err) {
       console.log(err);
     }

@@ -8,6 +8,7 @@ import TrashPage from "./Pages/trashPage";
 import ArchievePage from "./Pages/ArchievePage";
 import Loginpage from "./Pages/LoginPage";
 import ProfilePage from "./Pages/ProfilePage";
+import RegisterPage from "./Pages/RegisterPage";
 const App = () => {
   const {
     isAuthenticated,
@@ -92,6 +93,7 @@ const App = () => {
           <Route path="/archieve" element={<ArchievePage />} />
           <Route path="/login" element={<Loginpage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </Router>
     </>

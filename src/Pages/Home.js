@@ -1,6 +1,6 @@
 import MainBody from "../Components/MainBody";
 import SideBarComponent, { SidebarItem } from "../Components/SideBarComponent";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   faTrash,
   faNotesMedical,
@@ -15,10 +15,12 @@ import { AddFolder } from "../Components/FolderBody";
 import AddFolderModal from "../Components/AddFolderModal";
 import { LogOut } from "lucide-react";
 import { Context } from "../index.js";
+import axios from "axios";
 const Home = () => {
   const [AddNote, setAddNote] = useState(false);
   const [AddFolder, setAddFolder] = useState(false);
   const { setIsAuthenticated } = useContext(Context);
+  const navigateTo = useNavigate();
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(
@@ -41,7 +43,7 @@ const Home = () => {
             text="Home"
           />
         </Link>
-        <Link to={"/"}>
+        <Link to={"/profile"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faUser} />}
             text="Profile"

@@ -7,10 +7,19 @@ import { faThumbtack } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PinnedNote from "./PinnedNote";
 import PinnedFolder from "./PinnedFolder";
+import SkeletonComponent from "./SkeletonComponent";
+import FolderSkeleton from "./FolderSkeleton";
 
 const MainBody = ({ onOpen, onOpenFolder }) => {
-  const { Notes, setNotes, Folders, setTrashedNotes, setFolders } =
-    useContext(Context);
+  const {
+    Notes,
+    setNotes,
+    Folders,
+    setTrashedNotes,
+    setFolders,
+    isLoading,
+    setIsLoading,
+  } = useContext(Context);
   const [selectedRange, setSelectedRange] = useState("all");
   const [selectedFolderRange, setSelectedFolderRange] = useState("all");
   const [showPinned, setShowPinned] = useState(true);
@@ -151,47 +160,54 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
   return (
     <div className="w-full">
       <HeaderComponent onSearch={handleSearch} />
-      <div className="bg-home h-auto p-[15px] sm:p-[40px] rounded-3xl">
-        <div className="my-heading ">
-          <h1 className="text-4xl">My Notes</h1>
+      <div className="bg-home min-h-screen h-auto p-[15px] sm:p-[40px] rounded-3xl dark:bg-[#343539]">
+        <div className="add_content flex gap-3 mb-8 flex-wrap sm:justify-normal justify-center">
+          <AddNote onOpen={onOpen} />
+          <AddFolder onOpenFolder={onOpenFolder} />
         </div>
-        <div className="notes-range-selector flex mt-5 gap-[10px] sm:gap-[30px]">
+        <div className="my-heading ">
+          <h1 className="text-4xl dark:text-white">My Notes</h1>
+        </div>
+        <div className="notes-range-selector flex mt-5 gap-[15px] sm:gap-[30px]">
           <button
-            className={`text-[#CCCDCF] hover:text-black transition duration-500 ${
-              showPinned ? "text-black" : ""
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              showPinned ? "text-black dark:text-white" : ""
             }`}
             onClick={handlePinnedClick}
           >
             Pinned <FontAwesomeIcon icon={faThumbtack} />
           </button>
           <button
-            className={`text-[#CCCDCF] hover:text-black transition duration-500 ${
-              selectedRange === "today" ? "text-black" : ""
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              selectedRange === "today" ? "text-black dark:text-white" : ""
             }`}
             onClick={() => handleRangeClick("today")}
           >
             Today
           </button>
           <button
-            className={`text-[#CCCDCF] hover:text-black transition duration-500 ${
-              selectedRange === "week" ? "text-black" : ""
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              selectedRange === "week" ? "text-black dark:text-white" : ""
             }`}
             onClick={() => handleRangeClick("week")}
           >
             This Week
           </button>
           <button
-            className={`text-[#CCCDCF] hover:text-black transition duration-500 ${
-              selectedRange === "month" ? "text-black" : ""
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              selectedRange === "month" ? "text-black dark:text-white" : ""
             }`}
             onClick={() => handleRangeClick("month")}
           >
             This Month
           </button>
         </div>
-        <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-normal">
-          {filteredNotes && filteredNotes.length > 0
-            ? filteredNotes.map((note) => {
+        {isLoading ? (
+          <SkeletonComponent />
+        ) : (
+          <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-normal">
+            {filteredNotes && filteredNotes.length > 0 ? (
+              filteredNotes.map((note) => {
                 return note.isPinned ? (
                   <PinnedNote
                     key={note._id}
@@ -208,49 +224,58 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
                   />
                 );
               })
-            : "No Notes Available"}
-          <AddNote onOpen={onOpen} />
-        </div>
+            ) : (
+              <h1 className="text-2xl dark:text-white">No Notes Available</h1>
+            )}
+          </div>
+        )}
         <div className="my-heading mt-7">
-          <h1 className="text-4xl">Recent Folders</h1>
+          <h1 className="text-4xl dark:text-white">Recent Folders</h1>
         </div>
-        <div className="notes-range-selector flex mt-5 gap-[30px]">
+        <div className="notes-range-selector flex mt-5 gap-[15px] sm:gap-[30px]">
           <button
-            className={`text-[#CCCDCF] hover:text-black transition duration-500 ${
-              showPinnedFolders ? "text-black" : ""
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              showPinnedFolders ? "text-black dark:text-white" : ""
             }`}
             onClick={handlePinnedFolderClick}
           >
             Pinned <FontAwesomeIcon icon={faThumbtack} />
           </button>
           <button
-            className={`text-[#CCCDCF] hover:text-black transition duration-500 ${
-              selectedFolderRange === "today" ? "text-black" : ""
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              selectedFolderRange === "today"
+                ? "text-black dark:text-white"
+                : ""
             }`}
             onClick={() => handleFolderRangeClick("today")}
           >
             Today
           </button>
           <button
-            className={`text-[#CCCDCF] hover:text-black transition duration-500 ${
-              selectedFolderRange === "week" ? "text-black" : ""
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              selectedFolderRange === "week" ? "text-black dark:text-white" : ""
             }`}
             onClick={() => handleFolderRangeClick("week")}
           >
             This Week
           </button>
           <button
-            className={`text-[#CCCDCF] hover:text-black transition duration-500 ${
-              selectedFolderRange === "month" ? "text-black" : ""
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              selectedFolderRange === "month"
+                ? "text-black dark:text-white"
+                : ""
             }`}
             onClick={() => handleFolderRangeClick("month")}
           >
             This Month
           </button>
         </div>
-        <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-normal">
-          {filteredFolders && filteredFolders.length > 0
-            ? filteredFolders.map((folder) => {
+        {isLoading ? (
+          <FolderSkeleton />
+        ) : (
+          <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-normal">
+            {filteredFolders && filteredFolders.length > 0 ? (
+              filteredFolders.map((folder) => {
                 return folder.isPinned ? (
                   <PinnedFolder
                     key={folder._id}
@@ -267,9 +292,11 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
                   />
                 );
               })
-            : "No Folders Available"}
-          <AddFolder onOpenFolder={onOpenFolder} />
-        </div>
+            ) : (
+              <h1 className="text-2xl dark:text-white">No Folders Available</h1>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

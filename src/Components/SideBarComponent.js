@@ -6,7 +6,7 @@ import { createContext, useState } from "react";
 const SideBarComponent = ({ children }) => {
   return (
     <>
-      <aside className="h-screen hidden sm:block">
+      <aside className="h-screen hidden sm:block dark:bg-[#3C3D43] dark:text-white">
         <nav className="h-full flex flex-col  shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
             <img src={AppLogo} className="w-32" alt="" />
@@ -28,7 +28,7 @@ export function SidebarItem({ icon, text, active, alert }) {
       className={`
         relative flex items-center py-2 px-3 my-1
         font-medium rounded-md cursor-pointer
-        transition-colors group
+        transition-colors group dark:text-white dark:hover:text-black
         ${
           active
             ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"

@@ -1,14 +1,27 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Context } from "../index";
 import { useNavigate, Link } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Loginpage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser, setIsAuthenticated } = useContext(Context);
+  const { setUser, setIsAuthenticated, isAuthenticated, mode } =
+    useContext(Context);
   const navigate = useNavigate();
-
+  const element = document.documentElement;
+  useEffect(() => {
+    if (mode == "dark") {
+      element.classList.add("dark");
+      document.body.classList.add("dark");
+      localStorage.setItem("mode", JSON.stringify("dark"));
+    } else {
+      element.classList.remove("dark");
+      document.body.classList.remove("dark");
+      localStorage.setItem("mode", JSON.stringify("light"));
+    }
+  }, [mode]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -19,14 +32,19 @@ const Loginpage = () => {
       );
       setUser(data.user);
       setIsAuthenticated(true);
+      localStorage.setItem("isAuthenticated", true);
+      toast.success("Login Success!");
       navigate("/");
     } catch (err) {
       console.log(err);
+      localStorage.setItem("isAuthenticated", false);
+      toast.error(err.response.data.message);
     }
   };
+  if (isAuthenticated) navigate("/");
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
         <a
           href="#"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"

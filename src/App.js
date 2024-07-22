@@ -9,6 +9,8 @@ import ArchievePage from "./Pages/ArchievePage";
 import Loginpage from "./Pages/LoginPage";
 import ProfilePage from "./Pages/ProfilePage";
 import RegisterPage from "./Pages/RegisterPage";
+import ProtectedRoute from "./protectedRoutes";
+import { Toaster } from "react-hot-toast";
 const App = () => {
   const {
     isAuthenticated,
@@ -21,6 +23,8 @@ const App = () => {
     setFolders,
     TrashedNotes,
     setTrashedNotes,
+    isLoading,
+    setIsLoading,
   } = useContext(Context);
 
   useEffect(() => {
@@ -45,6 +49,7 @@ const App = () => {
     };
 
     const fetchNotes = async () => {
+      setIsLoading(true);
       try {
         const { data } = await axios.get(
           "https://noti-fy-backend.onrender.com/api/v1/note/mynotes",
@@ -57,10 +62,12 @@ const App = () => {
         const notTrashed = allNotes.filter((note) => !note.isTrashed);
         const Trashed = allNotes.filter((note) => note.isTrashed);
         setNotes(notTrashed);
+        setIsLoading(false);
         setTrashedNotes(Trashed);
         console.log(data.notes);
       } catch (error) {
         setNotes([]);
+        setIsLoading(false);
       }
     };
     const fetchFolders = async () => {
@@ -77,23 +84,26 @@ const App = () => {
         setFolders([]);
       }
     };
-
-    fetchUser();
-    fetchNotes();
-    fetchFolders();
+    if (isAuthenticated) {
+      fetchUser();
+      fetchNotes();
+      fetchFolders();
+    }
   }, [isAuthenticated]);
 
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/folder/:name/:id" element={<FolderPage />} />
-          <Route path="/trash" element={<TrashPage />} />
-          <Route path="/archieve" element={<ArchievePage />} />
-          <Route path="/login" element={<Loginpage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/login" element={<Loginpage />} />{" "}
           <Route path="/register" element={<RegisterPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/archieve" element={<ArchievePage />} />
+            <Route path="/folder/:name/:id" element={<FolderPage />} />
+            <Route path="/trash" element={<TrashPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
         </Routes>
       </Router>
     </>

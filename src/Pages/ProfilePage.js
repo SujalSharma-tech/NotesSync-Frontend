@@ -17,7 +17,8 @@ import { ArrowLeft, LogOut } from "lucide-react";
 import axios from "axios";
 
 const ProfilePage = () => {
-  const { user, Notes, setIsAuthenticated } = useContext(Context);
+  const { user, Notes, setIsAuthenticated, isAuthenticated } =
+    useContext(Context);
   const navigateTo = useNavigate();
   const handleLogout = async () => {
     try {
@@ -27,14 +28,18 @@ const ProfilePage = () => {
       );
 
       setIsAuthenticated(false);
+      localStorage.setItem("isAuthenticated", false);
       navigateTo("/login");
     } catch (err) {
       console.log(err);
     }
   };
+  useEffect(() => {
+    if (!isAuthenticated) navigateTo("/login");
+  }, []);
 
   return (
-    <div className="flex">
+    <div className="flex dark:bg-[#3C3D43]">
       <SideBarComponent>
         <Link to={"/"}>
           <SidebarItem
@@ -42,7 +47,7 @@ const ProfilePage = () => {
             text="Home"
           />
         </Link>
-        <Link to={"/"}>
+        <Link to={"/profile"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faUser} />}
             text="Profile"
@@ -62,12 +67,12 @@ const ProfilePage = () => {
         </div>
       </SideBarComponent>
 
-      <div className="w-full">
+      <div className="w-full dark:bg-[#3C3D43]">
         <HeaderComponent onSearch={() => {}} />
-        <div className="bg-home h-[85vh] p-[15px] sm:p-[40px] rounded-3xl">
+        <div className="bg-home min-h-[85vh] h-auto p-[15px] sm:p-[40px] rounded-3xl dark:bg-[#343539] dark:text-white">
           <div className="my-heading flex gap-2 items-center ">
             <Link to={"/"}>
-              <button className="border-4 rounded-full border-gray-200">
+              <button className="border-4 rounded-full border-gray-200 dark:border-[#898989]">
                 <ArrowLeft size={30} />
               </button>
             </Link>

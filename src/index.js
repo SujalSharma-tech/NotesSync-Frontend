@@ -2,18 +2,25 @@ import { createContext, useState } from "react";
 import ReactDom from "react-dom/client";
 import App from "./App";
 import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 export const Context = createContext({
   isAuthenticated: false,
 });
 
 const Wrapper = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return JSON.parse(localStorage.getItem("isAuthenticated")) || false;
+  });
   const [user, setUser] = useState({});
   const [Notes, setNotes] = useState([]);
   const [TrashedNotes, setTrashedNotes] = useState([]);
   const [Folders, setFolders] = useState([]);
-  const [mode, setMode] = useState("light");
+  const [mode, setMode] = useState(() => {
+    return JSON.parse(localStorage.getItem("mode")) || "dark";
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
   const handleNoteUpdate = (updatedNote) => {
     const updatedNotes = Notes.map((note) =>
       note._id === updatedNote._id ? updatedNote : note
@@ -56,8 +63,11 @@ const Wrapper = () => {
         handleNoteUpdate,
         handleNoteDelete,
         filterNotes,
+        isLoading,
+        setIsLoading,
       }}
     >
+      <Toaster />
       <App />
     </Context.Provider>
   );

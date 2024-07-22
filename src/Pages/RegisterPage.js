@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../index.js";
 import { Context } from "../index.js";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
   const { user, setUser, setIsAuthenticated } = useContext(Context);
@@ -22,18 +23,21 @@ const RegisterPage = () => {
       );
       console.log(data.user);
       setIsAuthenticated(true);
-
+      localStorage.setItem("isAuthenticated", true);
+      toast.success(data.message);
       setUser(data.user);
       navigateTo("/");
     } catch (err) {
       console.log(err);
       setIsAuthenticated(false);
+      toast.error(err.response.data.message);
+      localStorage.setItem("isAuthenticated", false);
     }
   };
   return (
     <>
       <section className="bg-gray-50 dark:bg-gray-900">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
           <a
             href="#"
             className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"

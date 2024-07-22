@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{html,js}"],
+  daisyui: {
+    themes: ["light"],
+  },
   theme: {
     extend: {
       boxShadow: {
@@ -23,5 +26,6 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  darkMode: "class",
+  plugins: [require("daisyui")],
 };

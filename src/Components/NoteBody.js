@@ -7,9 +7,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { Archive, Edit, Pin, Trash2, BookHeart } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { Context } from "../index.js";
+import toast from "react-hot-toast";
 
-const NoteBody = ({ note, onUpdate, onDelete }) => {
+const NoteBody = ({ note, onUpdate, onDelete, hideContent }) => {
   const dateformatter = (date) => {
     let dateObj = new Date(date);
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -25,6 +27,7 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isArchiving, setIsArchiving] = useState(false);
   const [isPinning, setIsPinning] = useState(false);
+  const { mode } = useContext(Context);
 
   const togglePinned = async (e) => {
     e.stopPropagation();
@@ -41,10 +44,12 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
       );
       // setIspinned(data.note.isPinned);
       onUpdate(data.note);
+      toast.success(`${data.note.isPinned ? "Note Pinned!" : "Note Unpinned"}`);
     } catch (err) {
       console.log(err);
       setIspinned(previousState);
       setIsPinning(false);
+      toast.error("Something went wrong! Please try again later.");
     } finally {
       setIsPinning(false);
     }
@@ -65,6 +70,9 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
       );
       // setIsArchived(data.note.isArchived);
       onUpdate(data.note);
+      toast.success(
+        `${data.note.isArchived ? "Note Archived!" : "Note Unarchived"}`
+      );
     } catch (err) {
       console.log(err);
       setIsArchived(previousState);
@@ -86,6 +94,7 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
         }
       );
       onUpdate(data.note);
+      toast.success("Note Added to Trash!");
       onDelete(data.note);
     } catch (err) {
       console.log(err);
@@ -95,7 +104,9 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
     }
   };
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    if (!hideContent) setIsModalOpen(true);
+  };
   const closeModal = () => {
     setIsModalOpen(false);
     setIsEditing(false);
@@ -111,9 +122,11 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
         }
       );
       onUpdate(data.note);
+      toast.success(data.message);
       closeModal();
     } catch (err) {
       console.log(err);
+      toast.error(err.response.data.message);
     }
   };
 
@@ -123,17 +136,17 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
         className="note_body_pink shadow-10xl rounded-2xl relative cursor-pointer sm:w-auto sm:h-auto w-[150px] h-[180px]"
         onClick={openModal}
       >
-        <div className="sm:w-[260px] sm:h-[300px] bg-[#E5BBBC] rounded-2xl p-[10px] sm:p-[15px] break-words break-all w-full h-full">
-          <div className="note_date text-[#9E6A69] text-[12px] sm:text-sm">
+        <div className="sm:w-[260px] sm:h-[300px] bg-[#E5BBBC] rounded-2xl p-[10px] sm:p-[15px] break-words break-all w-full h-full dark:bg-[#b6a5cb66]">
+          <div className="note_date text-[#9E6A69] text-[12px] sm:text-sm dark:text-white">
             {dateformatter(note.createdAt)}
           </div>
           <div className="note_title flex justify-between items-center">
-            <h1 className="text-xl my-2 text-nowrap overflow-hidden overflow-ellipsis">
+            <h1 className="text-xl my-2 text-nowrap overflow-hidden overflow-ellipsis dark:text-white">
               {note.title}
             </h1>
             <div className="note_edit_button"></div>
           </div>
-          <div className="note_content text-sm text-[#461F1E]">
+          <div className="note_content text-sm text-[#461F1E] dark:text-white">
             <p>{note.content}</p>
           </div>
           <div className="note_operations flex gap-4 absolute bottom-3 right-3">
@@ -148,7 +161,16 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
                 {isPinning ? (
                   ""
                 ) : (
-                  <Pin fill={`${note.isPinned ? "black" : "none"}`} />
+                  <Pin
+                    fill={`${
+                      note.isPinned
+                        ? mode == "light"
+                          ? "black"
+                          : "white"
+                        : "none"
+                    }`}
+                    color={`${mode == "dark" ? "white" : "black"}`}
+                  />
                 )}
               </div>
               {isPinning && <div className="loader"></div>}
@@ -157,7 +179,7 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
               className="note_delete_button note_action_button"
               onClick={toggleDelete}
             >
-              <div className="note_delete">
+              <div className="note_delete dark:text-white">
                 <span className="tooltip">Delete</span>
                 {isDeleting ? "" : <Trash2 />}
               </div>
@@ -176,6 +198,9 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
                 ) : (
                   <BookHeart
                     fill={`${note.isArchived ? "cadetblue" : "none"}`}
+                    color={`${
+                      note.isArchived || mode == "light" ? "black" : "white"
+                    }`}
                   />
                 )}
               </div>
@@ -187,7 +212,7 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] h-[90%] flex flex-col relative overflow-hidden">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] h-[90%] flex flex-col relative overflow-hidden dark:bg-[#686273] dark:text-white">
             {!isEditing ? (
               <>
                 <h2 className="text-2xl mb-4 whitespace-pre-line">
@@ -213,25 +238,25 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
               </>
             ) : (
               <>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                <div className="mb-4 ">
+                  <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-white">
                     Title
                   </label>
                   <input
                     type="text"
                     value={noteTitle}
                     onChange={(e) => setNoteTitle(e.target.value)}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:text-white dark:bg-transparent dark:border-[#898989]"
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                  <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-white">
                     Content
                   </label>
                   <textarea
                     value={noteContent}
                     onChange={(e) => setNoteContent(e.target.value)}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:text-white dark:bg-transparent dark:border-[#898989]"
                     rows="12"
                   />
                 </div>
@@ -264,16 +289,15 @@ export const AddNote = ({ onOpen }) => {
   return (
     <>
       <div className="flex flex-col gap-2 justify-center">
-        <button className="add_note">
-          <div className="add_note_body w-[250px] h-[140px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed border-gray-400 hover:bg-slate-200 transition duration-500">
+        {/* <button className="add_note">
+          <div className="add_note_body w-[250px] h-[140px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed border-gray-400 hover:bg-slate-200 transition duration-500 dark:text-white dark:hover:text-black">
             <FontAwesomeIcon icon={faNoteSticky} size="2x" />
             <h1 className="text-md text-center">View All</h1>
           </div>
-        </button>
+        </button> */}
         <button className="add_note" onClick={onOpen}>
-          <div className="add_note_body w-[250px] h-[140px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed border-gray-400 hover:bg-slate-200 transition duration-500">
+          <div className="add_note_body h-[180px] w-[150px] sm:w-[250px] sm:h-[140px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed border-gray-400 hover:bg-slate-200 transition duration-500 dark:text-white dark:hover:text-black ">
             <div className="w-7 flex">
-              {/* <img src={EditIcon} /> */}
               <Edit />
             </div>
             <h1 className="text-md text-center">New Note</h1>

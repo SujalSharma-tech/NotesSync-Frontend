@@ -16,6 +16,7 @@ import { Context } from "../index";
 import { ArrowLeft, LogOut } from "lucide-react";
 import SelectNotemodal from "../Components/SelectNoteModal";
 import AddNoteModal from "../Components/AddNoteModal";
+import toast from "react-hot-toast";
 
 const Dropdown = ({ onOpen, onNoteOpen, id }) => {
   return (
@@ -43,6 +44,7 @@ const FolderPage = () => {
     handleNoteUpdate,
     handleNoteDelete,
     setIsAuthenticated,
+    isAuthenticated,
   } = useContext(Context);
   const { name, id } = useParams();
   const navigateTo = useNavigate();
@@ -67,13 +69,19 @@ const FolderPage = () => {
       );
 
       setIsAuthenticated(false);
+      localStorage.setItem("isAuthenticated", false);
+      toast.success("User Logged Out!");
       navigateTo("/login");
     } catch (err) {
       console.log(err);
+      toast.error(err?.response.data.message);
     }
   };
+  useEffect(() => {
+    if (!isAuthenticated) navigateTo("/login");
+  }, [isAuthenticated]);
   return (
-    <div className="flex">
+    <div className="flex dark:bg-[#3C3D43]">
       <SideBarComponent>
         <Link to={"/"}>
           <SidebarItem
@@ -81,7 +89,7 @@ const FolderPage = () => {
             text="Home"
           />
         </Link>
-        <Link to={"/"}>
+        <Link to={"/profile"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faUser} />}
             text="Profile"
@@ -101,16 +109,16 @@ const FolderPage = () => {
         </div>
       </SideBarComponent>
 
-      <div className="w-full">
+      <div className="w-full dark:bg-[#3C3D43]">
         <HeaderComponent />
-        <div className="bg-home h-auto p-[10px] sm:p-[40px] rounded-3xl">
-          <div className="my-heading flex gap-2 items-center ">
+        <div className="bg-home min-h-screen h-auto p-[10px] sm:p-[40px] rounded-3xl dark:bg-[#343539]">
+          <div className="my-heading flex gap-2 items-center  ">
             <Link to={"/"}>
-              <button className="border-4 rounded-full border-gray-200">
+              <button className="border-4 rounded-full border-gray-200 dark:border-[#898989] dark:text-white">
                 <ArrowLeft size={30} />
               </button>
             </Link>
-            <h1 className="text-4xl">{name}</h1>
+            <h1 className="text-4xl dark:text-white">{name}</h1>
             <div className="button relative">
               <button
                 className="bg-pink-400 text-white rounded-lg px-[3px] py-[6px] "
@@ -127,32 +135,22 @@ const FolderPage = () => {
               )}
             </div>
           </div>
-          <div className="notes-range-selector flex mt-5 gap-[15px] sm:gap-[30px]">
-            <div>All</div>
-            <button className="text-[#CCCDCF] hover:text-black transition duration-500">
-              Today
-            </button>
-            <button className="text-[#CCCDCF] hover:text-black transition duration-500">
-              This Week
-            </button>
-            <button className="text-[#CCCDCF] hover:text-black transition duration-500">
-              This Month
-            </button>
-          </div>
-          <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center">
-            {filteredNotes && filteredNotes.length > 0
-              ? filteredNotes.map((note) => {
-                  return (
-                    <NoteBody
-                      key={note._id}
-                      note={note}
-                      onUpdate={handleNoteUpdate}
-                      onDelete={handleNoteDelete}
-                    />
-                  );
-                })
-              : "Empty Folder"}
-            {/* <AddNote onOpen={onOpen} /> */}
+
+          <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-start">
+            {filteredNotes && filteredNotes.length > 0 ? (
+              filteredNotes.map((note) => {
+                return (
+                  <NoteBody
+                    key={note._id}
+                    note={note}
+                    onUpdate={handleNoteUpdate}
+                    onDelete={handleNoteDelete}
+                  />
+                );
+              })
+            ) : (
+              <h1 className="text-2xl dark:text-white">Empty Folder</h1>
+            )}
           </div>
         </div>
       </div>

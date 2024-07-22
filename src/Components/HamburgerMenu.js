@@ -23,13 +23,13 @@ const HamburgerMenu = ({ isOpen, onClose }) => {
   };
   return (
     <div
-      className={`fixed inset-0 bg-gray-500 bg-opacity-75 z-50 transition-transform transform ${
+      className={`fixed inset-0 bg-gray-500 bg-opacity-75  z-50 transition-transform transform ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
       onClick={onClose}
     >
       <div
-        className="bg-white w-2/3 max-w-md h-full p-6 flex flex-col"
+        className="bg-white w-2/3 max-w-md h-full p-6 flex flex-col dark:bg-[#3C3D43]"
         onClick={(e) => e.stopPropagation()}
       >
         <button className=" self-end mb-4" onClick={onClose}>

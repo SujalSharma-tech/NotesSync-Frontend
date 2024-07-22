@@ -19,6 +19,7 @@ import AddNoteModal from "../Components/AddNoteModal";
 import DeletedNote from "../Components/DeletedNote";
 import axios from "axios";
 import SelectArchiveModal from "../Components/SelectArchiveModal";
+import toast from "react-hot-toast";
 
 const Dropdown = ({ onOpen, onNoteOpen }) => {
   return (
@@ -40,8 +41,13 @@ const ArchievePage = () => {
   //   const [filteredNotes, setfilteredNotes] = useState([]);
   const [AddNote, setAddNote] = useState(false);
   const [AddNoteOpen, setAddNoteOpen] = useState(false);
-  const { setNotes, Notes, setTrashedNotes, setIsAuthenticated } =
-    useContext(Context);
+  const {
+    setNotes,
+    Notes,
+    setTrashedNotes,
+    setIsAuthenticated,
+    isAuthenticated,
+  } = useContext(Context);
   const { name, id } = useParams();
   const navigateTo = useNavigate();
 
@@ -94,9 +100,12 @@ const ArchievePage = () => {
       );
 
       setIsAuthenticated(false);
+      localStorage.setItem("isAuthenticated", false);
+      toast.success("User Logged Out!");
       navigateTo("/login");
     } catch (err) {
       console.log(err);
+      toast.error(err?.response.data.message);
     }
   };
 
@@ -107,8 +116,11 @@ const ArchievePage = () => {
   const handleSearch = (text) => {
     setSearchTerm(text);
   };
+  //   useEffect(() => {
+  //     if (!isAuthenticated) navigateTo("/login");
+  //   }, [isAuthenticated]);
   return (
-    <div className="flex">
+    <div className="flex dark:bg-[#3C3D43]">
       <SideBarComponent>
         <Link to={"/"}>
           <SidebarItem
@@ -116,7 +128,7 @@ const ArchievePage = () => {
             text="Home"
           />
         </Link>
-        <Link to={"/"}>
+        <Link to={"/profile"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faUser} />}
             text="Profile"
@@ -136,16 +148,18 @@ const ArchievePage = () => {
         </div>
       </SideBarComponent>
 
-      <div className="w-full">
+      <div className="w-full dark:bg-[#3C3D43]">
         <HeaderComponent onSearch={handleSearch} />
-        <div className="bg-home h-auto p-[15px] sm:p-[40px] rounded-3xl">
+        <div className="bg-home min-h-screen h-auto p-[15px] sm:p-[40px] rounded-3xl dark:bg-[#343539]">
           <div className="my-heading flex gap-2 items-center ">
             <Link to={"/"}>
-              <button className="border-4 rounded-full border-gray-200">
+              <button className="border-4 rounded-full border-gray-200 dark:border-[#898989] dark:text-white">
                 <ArrowLeft size={30} />
               </button>
             </Link>
-            <h1 className="sm:text-4xl text-2xl">Archived Notes</h1>
+            <h1 className="sm:text-4xl text-2xl dark:text-white">
+              Archived Notes
+            </h1>
             <div className="button relative">
               <button
                 className="bg-pink-400 text-white rounded-lg px-[3px] py-[6px] "
@@ -164,18 +178,20 @@ const ArchievePage = () => {
           </div>
 
           <div className="notes-container mt-5 flex gap-3 sm:gap-[25px] flex-wrap sm:justify-normal justify-center">
-            {filteredNotes && filteredNotes.length > 0
-              ? filteredNotes.map((note) => {
-                  return (
-                    <NoteBody
-                      key={note._id}
-                      note={note}
-                      onUpdate={handleNoteUpdate}
-                      onDelete={handleNoteDelete}
-                    />
-                  );
-                })
-              : "Empty Folder"}
+            {filteredNotes && filteredNotes.length > 0 ? (
+              filteredNotes.map((note) => {
+                return (
+                  <NoteBody
+                    key={note._id}
+                    note={note}
+                    onUpdate={handleNoteUpdate}
+                    onDelete={handleNoteDelete}
+                  />
+                );
+              })
+            ) : (
+              <h1 className="text-2xl dark:text-white">No Notes Found</h1>
+            )}
           </div>
         </div>
       </div>

@@ -53,6 +53,10 @@
 }
 
 
+.container-dark{
+  background-color: rgba(182, 165, 203, 0.4);
+}
+
 @media only screen and (min-width: 320px){
   .note_content{
     height: auto;
@@ -75,4 +79,8 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.searchbar:focus{
+  outline: none;
 }

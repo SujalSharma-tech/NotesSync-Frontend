@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 const Dropdown = ({ onPin, folder, onDelete }) => {
@@ -49,10 +50,14 @@ const FolderBody = ({ folder, onUpdate, onDelete }) => {
       );
       setIsPinned(data.folder.isPinned);
       onUpdate(data.folder);
+      toast.success(
+        `${data.folder.isPinned ? "Folder Pinned!" : "Folder Unpinned"}`
+      );
 
       console.log(data);
     } catch (err) {
       console.log(err);
+      toast.error(err?.response?.data?.message);
     }
   };
   const handleDelete = async (folder) => {
@@ -62,10 +67,12 @@ const FolderBody = ({ folder, onUpdate, onDelete }) => {
         { withCredentials: true }
       );
       onDelete(data);
+      toast.success("Folder Deleted");
 
       console.log(data);
     } catch (err) {
       console.log(err);
+      toast.error(err.response.data.message);
     }
   };
 
@@ -73,16 +80,16 @@ const FolderBody = ({ folder, onUpdate, onDelete }) => {
   return (
     <>
       <div className="folder_body_pink shadow-10xl my-4 rounded-2xl sm:w-[260px] sm:h-[140px] w-[150px] h-[180px]">
-        <div className=" bg-[#E5BBBC] rounded-2xl p-[15px] sm:w-auto sm:h-auto w-full h-full">
+        <div className="dark:bg-[#b6a5cb66] bg-[#E5BBBC] rounded-2xl p-[15px] sm:w-auto sm:h-auto w-full h-full">
           <div className="folder_title flex justify-between items-center">
             <FontAwesomeIcon
               icon={faFolder}
               size="3x"
               style={{ color: "#c0784f" }}
             />
-            <div className="folder_edit_button relative">
+            <div className="folder_edit_button relative dark:text-white">
               <button
-                className="w-5 flex"
+                className="folder_edit w-5 flex"
                 onClick={() => setShowDropdown((prev) => !prev)}
               >
                 <FontAwesomeIcon icon={faEllipsis} size="1x" />
@@ -97,8 +104,8 @@ const FolderBody = ({ folder, onUpdate, onDelete }) => {
             </div>
           </div>
           <Link to={`/folder/${folder.name}/${folder._id}`}>
-            <h1 className="text-xl my-4">{folder.name}</h1>
-            <div className="folder_date text-[#9E6A69] text-sm">
+            <h1 className="text-xl my-4 dark:text-white">{folder.name}</h1>
+            <div className="folder_date text-[#9E6A69] text-sm dark:text-white">
               {dateformatter(folder.createdAt)}
             </div>
           </Link>
@@ -114,14 +121,14 @@ export const AddFolder = ({ onOpenFolder }) => {
   return (
     <>
       <div className="flex  gap-6 justify-center">
-        <button className="add_note">
-          <div className="add_note_body w-[130px] h-[130px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed border-gray-400 hover:bg-slate-200 transition duration-500 ">
+        {/* <button className="add_note">
+          <div className="add_note_body w-[130px] h-[130px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed border-gray-400 hover:bg-slate-200 transition duration-500 dark:text-white dark:hover:text-black ">
             <FontAwesomeIcon icon={faFolder} size="2x" />
             <h1 className="text-md text-center">View All</h1>
           </div>
-        </button>
+        </button> */}
         <button className="add_folder" onClick={onOpenFolder}>
-          <div className="add_folder_body w-[130px] h-[130px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed  border-gray-400 hover:bg-slate-200 transition duration-500 z-10">
+          <div className="add_folder_body h-[180px] w-[150px] sm:w-[250px] sm:h-[140px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed  border-gray-400 hover:bg-slate-200 transition duration-500 z-10 dark:text-white dark:hover:text-black">
             <FontAwesomeIcon icon={faPlus} size="2x" />
             <h1 className="text-md text-center">New Folder</h1>
           </div>

@@ -165,4 +165,3 @@ This project is licensed under the ISC License. 📄
 ---
 
 Made with ❤️ by [Sujal](https://github.com/SujalSharma-tech)
-```

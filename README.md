@@ -1,5 +1,4 @@
 
-```markdown
 # 📝 NotesSync - Collaborative Note-Taking App
 
 Welcome to **NotesSync**, a powerful and user-friendly note-taking app designed for seamless collaboration! 🚀
@@ -19,7 +18,6 @@ Welcome to **NotesSync**, a powerful and user-friendly note-taking app designed 
 
 - Node.js
 - MongoDB Atlas Account
-```
 
 ### Installation
 

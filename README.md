@@ -1,4 +1,3 @@
-Certainly! Here's a `README.md` file with emojis to make it more engaging and visually appealing for your GitHub repository:
 
 ```markdown
 # 📝 Noti.fy - Collaborative Note-Taking App

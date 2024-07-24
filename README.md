@@ -19,6 +19,7 @@ Welcome to **Noti.fy**, a powerful and user-friendly note-taking app designed fo
 
 - Node.js
 - MongoDB Atlas Account
+```
 
 ### Installation
 

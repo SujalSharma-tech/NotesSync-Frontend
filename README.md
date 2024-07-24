@@ -1,8 +1,8 @@
 
 ```markdown
-# 📝 Noti.fy - Collaborative Note-Taking App
+# 📝 NotesSync - Collaborative Note-Taking App
 
-Welcome to **Noti.fy**, a powerful and user-friendly note-taking app designed for seamless collaboration! 🚀
+Welcome to **NotesSync**, a powerful and user-friendly note-taking app designed for seamless collaboration! 🚀
 
 ## Features
 
@@ -91,10 +91,9 @@ Welcome to **Noti.fy**, a powerful and user-friendly note-taking app designed fo
 
 ### Sharing a Note
 
-1. Click on a note to open it.
-2. Click on the "Share" button.
-3. Enter the email address of the user you want to share the note with.
-4. Click "Share".
+1. Click on share button on note to open share modal.
+2. Enter the email address of the user you want to share the note with.
+3. Click "Share".
 
 ### Removing a User from a Shared Note
 
@@ -117,6 +116,6 @@ This project is licensed under the MIT License. 📄
 
 ---
 
-Made with ❤️ by Sujal (https://github.com/SujalSharma-tech)
+Made with ❤️ by [Sujal](https://github.com/SujalSharma-tech)
 ```
 

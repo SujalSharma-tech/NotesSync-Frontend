@@ -16,6 +16,7 @@ const Wrapper = () => {
   const [Notes, setNotes] = useState([]);
   const [TrashedNotes, setTrashedNotes] = useState([]);
   const [Folders, setFolders] = useState([]);
+  const [sharedNotes, setSharedNotes] = useState([]);
   const [mode, setMode] = useState(() => {
     return JSON.parse(localStorage.getItem("mode")) || "dark";
   });
@@ -65,6 +66,8 @@ const Wrapper = () => {
         filterNotes,
         isLoading,
         setIsLoading,
+        sharedNotes,
+        setSharedNotes,
       }}
     >
       <Toaster />

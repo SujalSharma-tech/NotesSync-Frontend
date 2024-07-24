@@ -5,6 +5,7 @@ import {
   faNotesMedical,
   faBook,
   faUser,
+  faShareAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -95,10 +96,16 @@ const FolderPage = () => {
             text="Profile"
           />
         </Link>
+        <Link to={"/shared"}>
+          <SidebarItem
+            icon={<FontAwesomeIcon icon={faShareAlt} />}
+            text="Shared"
+          />
+        </Link>
         <Link to={"/archieve"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faBook} />}
-            text="Archieve"
+            text="Archive"
           />
         </Link>
         <Link to={"/trash"}>

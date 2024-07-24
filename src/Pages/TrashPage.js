@@ -5,6 +5,7 @@ import {
   faNotesMedical,
   faBook,
   faUser,
+  faShareAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -61,7 +62,7 @@ const TrashPage = () => {
   const handleNoteRestore = async (noteId) => {
     try {
       const { data } = await axios.patch(
-        `https://noti-fy-backend.onrender.com/api/v1/note/${noteId}/restore`,
+        `http://localhost:4000/api/v1/note/${noteId}/restore`,
         { isTrashed: false },
         { withCredentials: true }
       );
@@ -76,7 +77,7 @@ const TrashPage = () => {
   const handleNoteDelete = async (noteId) => {
     try {
       const { data } = await axios.delete(
-        `https://noti-fy-backend.onrender.com/api/v1/note/deletenote/${noteId}`,
+        `http://localhost:4000/api/v1/note/deletenote/${noteId}`,
         { withCredentials: true }
       );
       // setNotes((prev) => [data.note, ...prev]);
@@ -91,7 +92,7 @@ const TrashPage = () => {
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(
-        "https://noti-fy-backend.onrender.com/api/v1/user/logout",
+        "http://localhost:4000/api/v1/user/logout",
         { withCredentials: true }
       );
 
@@ -117,7 +118,7 @@ const TrashPage = () => {
       });
       const { data } = await await axios.request({
         method: "DELETE",
-        url: "https://noti-fy-backend.onrender.com/api/v1/note/deleteall",
+        url: "http://localhost:4000/api/v1/note/deleteall",
         data: { id: ids },
         withCredentials: true,
       });
@@ -152,10 +153,16 @@ const TrashPage = () => {
             text="Profile"
           />
         </Link>
+        <Link to={"/shared"}>
+          <SidebarItem
+            icon={<FontAwesomeIcon icon={faShareAlt} />}
+            text="Shared"
+          />
+        </Link>
         <Link to={"/archieve"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faBook} />}
-            text="Archieve"
+            text="Archive"
           />
         </Link>
         <Link to={"/trash"}>
@@ -167,7 +174,7 @@ const TrashPage = () => {
       </SideBarComponent>
 
       <div className="w-full dark:bg-[#3C3D43]">
-        <HeaderComponent />
+        <HeaderComponent onSearch={() => {}} />
         <div className="bg-home min-h-screen p-[15px] sm:p-[40px] rounded-3xl dark:bg-[#343539]">
           <div className="my-heading flex gap-2 items-center ">
             <Link to={"/"}>

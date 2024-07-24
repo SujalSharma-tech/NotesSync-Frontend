@@ -3,21 +3,24 @@ import {
   faTrash,
   faThumbtack,
   faBook,
+  faShareAlt,
+  faShareAltSquare,
+  faShareNodes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { Archive, Edit, Pin, Trash2, BookHeart } from "lucide-react";
+import { Archive, Edit, Pin, Trash2, BookHeart, Share2 } from "lucide-react";
 import { useContext, useState } from "react";
 import { Context } from "../index.js";
 import toast from "react-hot-toast";
+import SharewithModal from "./SharewithModal.js";
 
-const NoteBody = ({ note, onUpdate, onDelete, hideContent }) => {
+const NoteBody = ({ note, onUpdate, onDelete, hideContent, allowedEdit }) => {
   const dateformatter = (date) => {
     let dateObj = new Date(date);
     const options = { year: "numeric", month: "long", day: "numeric" };
     return dateObj.toLocaleDateString("en-US", options);
   };
-
   const [isPinned, setIspinned] = useState(note.isPinned);
   const [isArchived, setIsArchived] = useState(note.isArchived);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +30,7 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isArchiving, setIsArchiving] = useState(false);
   const [isPinning, setIsPinning] = useState(false);
+  const [AddShare, setAddShare] = useState(false);
   const { mode } = useContext(Context);
 
   const togglePinned = async (e) => {
@@ -42,7 +46,6 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent }) => {
           withCredentials: true,
         }
       );
-      // setIspinned(data.note.isPinned);
       onUpdate(data.note);
       toast.success(`${data.note.isPinned ? "Note Pinned!" : "Note Unpinned"}`);
     } catch (err) {
@@ -68,7 +71,6 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent }) => {
           withCredentials: true,
         }
       );
-      // setIsArchived(data.note.isArchived);
       onUpdate(data.note);
       toast.success(
         `${data.note.isArchived ? "Note Archived!" : "Note Unarchived"}`
@@ -130,6 +132,10 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent }) => {
     }
   };
 
+  const handleShare = async (e) => {
+    e.stopPropagation();
+    setAddShare(true);
+  };
   return (
     <>
       <div
@@ -149,64 +155,93 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent }) => {
           <div className="note_content text-sm text-[#461F1E] dark:text-white">
             <p>{note.content}</p>
           </div>
-          <div className="note_operations flex gap-4 absolute bottom-3 right-3">
-            <button
-              className="note_pin_button note_action_button"
-              onClick={togglePinned}
-            >
-              <div className="note_pin">
-                <span className="tooltip">{`${
-                  note.isPinned ? "Unpin" : "Pin"
-                }`}</span>
-                {isPinning ? (
-                  ""
-                ) : (
-                  <Pin
-                    fill={`${
-                      note.isPinned
-                        ? mode == "light"
-                          ? "black"
-                          : "white"
-                        : "none"
-                    }`}
-                    color={`${mode == "dark" ? "white" : "black"}`}
-                  />
-                )}
-              </div>
-              {isPinning && <div className="loader"></div>}
-            </button>
-            <button
-              className="note_delete_button note_action_button"
-              onClick={toggleDelete}
-            >
-              <div className="note_delete dark:text-white">
-                <span className="tooltip">Delete</span>
-                {isDeleting ? "" : <Trash2 />}
-              </div>
-              {isDeleting && <div className="loader"></div>}
-            </button>
-            <button
-              className="note_archive_button note_action_button"
-              onClick={toggleArchived}
-            >
-              <div className="note_archive">
-                <span className="tooltip">{`${
-                  note.isArchived ? "Unarchive" : "Archive"
-                }`}</span>
-                {isArchiving ? (
-                  ""
-                ) : (
-                  <BookHeart
-                    fill={`${note.isArchived ? "cadetblue" : "none"}`}
-                    color={`${
-                      note.isArchived || mode == "light" ? "black" : "white"
-                    }`}
-                  />
-                )}
-              </div>
-              {isArchiving && <div className="loader"></div>}
-            </button>
-          </div>
+          {allowedEdit ? (
+            <div className="note_operations flex gap-3 sm:gap-4 absolute bottom-3 right-3">
+              <button
+                className="note_share_button note_action_button"
+                onClick={handleShare}
+              >
+                <div className="note_share dark:text-white">
+                  <span className="tooltip">Share</span>
+                  {<Share2 fill={note.isShared ? "black" : "none"} />}
+                </div>
+                {isDeleting && <div className="loader"></div>}
+              </button>
+              <button
+                className="note_pin_button note_action_button"
+                onClick={togglePinned}
+              >
+                <div className="note_pin">
+                  <span className="tooltip">{`${
+                    note.isPinned ? "Unpin" : "Pin"
+                  }`}</span>
+                  {isPinning ? (
+                    ""
+                  ) : (
+                    <Pin
+                      fill={`${
+                        note.isPinned
+                          ? mode == "light"
+                            ? "black"
+                            : "white"
+                          : "none"
+                      }`}
+                      color={`${mode == "dark" ? "white" : "black"}`}
+                    />
+                  )}
+                </div>
+                {isPinning && <div className="loader"></div>}
+              </button>
+              <button
+                className="note_delete_button note_action_button"
+                onClick={toggleDelete}
+              >
+                <div className="note_delete dark:text-white">
+                  <span className="tooltip">Delete</span>
+                  {isDeleting ? "" : <Trash2 />}
+                </div>
+                {isDeleting && <div className="loader"></div>}
+              </button>
+              <button
+                className="note_archive_button note_action_button"
+                onClick={toggleArchived}
+              >
+                <div className="note_archive">
+                  <span className="tooltip">{`${
+                    note.isArchived ? "Unarchive" : "Archive"
+                  }`}</span>
+                  {isArchiving ? (
+                    ""
+                  ) : (
+                    <BookHeart
+                      fill={`${note.isArchived ? "cadetblue" : "none"}`}
+                      color={`${
+                        note.isArchived || mode == "light" ? "black" : "white"
+                      }`}
+                    />
+                  )}
+                </div>
+                {isArchiving && <div className="loader"></div>}
+              </button>
+            </div>
+          ) : (
+            <div className="note_operations flex gap-3 sm:gap-4 absolute bottom-3 right-3">
+              <button
+                className="note_share_button note_action_button"
+                onClick={handleShare}
+              >
+                <div className="note_share dark:text-white">
+                  <span className="tooltip">Share</span>
+                  {isDeleting ? (
+                    ""
+                  ) : (
+                    <FontAwesomeIcon icon={faShareAlt} size="lg" />
+                  )}
+                </div>
+                {isDeleting && <div className="loader"></div>}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -278,6 +313,13 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent }) => {
             )}
           </div>
         </div>
+      )}
+      {AddShare && (
+        <SharewithModal
+          onClose={() => setAddShare(false)}
+          note={note}
+          onUpdate={onUpdate}
+        />
       )}
     </>
   );

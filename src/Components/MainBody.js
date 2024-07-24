@@ -9,6 +9,7 @@ import PinnedNote from "./PinnedNote";
 import PinnedFolder from "./PinnedFolder";
 import SkeletonComponent from "./SkeletonComponent";
 import FolderSkeleton from "./FolderSkeleton";
+import SharewithModal from "./SharewithModal";
 
 const MainBody = ({ onOpen, onOpenFolder }) => {
   const {
@@ -171,6 +172,16 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
         <div className="notes-range-selector flex mt-5 gap-[15px] sm:gap-[30px]">
           <button
             className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              selectedRange === "all" && !showPinned
+                ? "text-black dark:text-white"
+                : ""
+            }`}
+            onClick={() => handleRangeClick("all")}
+          >
+            All
+          </button>
+          <button
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
               showPinned ? "text-black dark:text-white" : ""
             }`}
             onClick={handlePinnedClick}
@@ -185,14 +196,14 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
           >
             Today
           </button>
-          <button
+          {/* <button
             className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
               selectedRange === "week" ? "text-black dark:text-white" : ""
             }`}
             onClick={() => handleRangeClick("week")}
           >
             This Week
-          </button>
+          </button> */}
           <button
             className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
               selectedRange === "month" ? "text-black dark:text-white" : ""
@@ -214,6 +225,7 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
                     note={note}
                     onUpdate={handleNoteUpdate}
                     onDelete={handleNoteDelete}
+                    allowedEdit={true}
                   />
                 ) : (
                   <NoteBody
@@ -221,6 +233,7 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
                     note={note}
                     onUpdate={handleNoteUpdate}
                     onDelete={handleNoteDelete}
+                    allowedEdit={true}
                   />
                 );
               })
@@ -233,6 +246,16 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
           <h1 className="text-4xl dark:text-white">Recent Folders</h1>
         </div>
         <div className="notes-range-selector flex mt-5 gap-[15px] sm:gap-[30px]">
+          <button
+            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
+              selectedFolderRange === "all" && !showPinnedFolders
+                ? "text-black dark:text-white"
+                : ""
+            }`}
+            onClick={() => handleFolderRangeClick("all")}
+          >
+            All
+          </button>
           <button
             className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
               showPinnedFolders ? "text-black dark:text-white" : ""
@@ -251,14 +274,14 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
           >
             Today
           </button>
-          <button
+          {/* <button
             className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
               selectedFolderRange === "week" ? "text-black dark:text-white" : ""
             }`}
             onClick={() => handleFolderRangeClick("week")}
           >
             This Week
-          </button>
+          </button> */}
           <button
             className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
               selectedFolderRange === "month"

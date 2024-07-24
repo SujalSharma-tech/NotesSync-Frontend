@@ -18,8 +18,15 @@ const withPinnedIcon = (WrappedComponent) => {
 
 const PinnedNoteBody = withPinnedIcon(NoteBody);
 
-const PinnedNote = ({ note, onUpdate, onDelete }) => {
-  return <PinnedNoteBody note={note} onUpdate={onUpdate} onDelete={onDelete} />;
+const PinnedNote = ({ note, onUpdate, onDelete, allowedEdit }) => {
+  return (
+    <PinnedNoteBody
+      note={note}
+      onUpdate={onUpdate}
+      onDelete={onDelete}
+      allowedEdit={allowedEdit}
+    />
+  );
 };
 
 export default PinnedNote;

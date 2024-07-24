@@ -6,10 +6,11 @@ import toast from "react-hot-toast";
 const AddNoteModal = ({ onClose, id, onNoteAdded }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const { setNotes } = useContext(Context);
+  const { setNotes, user } = useContext(Context);
+  const owner = user.email;
 
   const addnewNote = async () => {
-    const newNote = { title, content };
+    const newNote = { title, content, owner };
     try {
       const { data } = await axios.post(
         "https://noti-fy-backend.onrender.com/api/v1/note/addnote",

@@ -5,6 +5,8 @@ import {
   faNotesMedical,
   faBook,
   faUser,
+  faShare,
+  faShareAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -134,10 +136,16 @@ const ArchievePage = () => {
             text="Profile"
           />
         </Link>
+        <Link to={"/shared"}>
+          <SidebarItem
+            icon={<FontAwesomeIcon icon={faShareAlt} />}
+            text="Shared"
+          />
+        </Link>
         <Link to={"/archieve"}>
           <SidebarItem
             icon={<FontAwesomeIcon icon={faBook} />}
-            text="Archieve"
+            text="Archive"
           />
         </Link>
         <Link to={"/trash"}>
@@ -186,6 +194,7 @@ const ArchievePage = () => {
                     note={note}
                     onUpdate={handleNoteUpdate}
                     onDelete={handleNoteDelete}
+                    allowedEdit={true}
                   />
                 );
               })

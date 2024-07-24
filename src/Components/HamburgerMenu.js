@@ -1,8 +1,10 @@
-import { BookHeart, Home, LogOut, Trash2, User, X } from "lucide-react";
+import { BookHeart, Home, LogOut, Share2, Trash2, User, X } from "lucide-react";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../index";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShareAlt } from "@fortawesome/free-solid-svg-icons";
 
 const HamburgerMenu = ({ isOpen, onClose }) => {
   const { setIsAuthenticated } = useContext(Context);
@@ -51,6 +53,15 @@ const HamburgerMenu = ({ isOpen, onClose }) => {
               onClick={onClose}
             >
               <User /> Profile
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/shared"
+              className="text-xl flex gap-[5px]"
+              onClick={onClose}
+            >
+              <Share2 /> Shared
             </Link>
           </li>
           <li>

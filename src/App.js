@@ -11,6 +11,7 @@ import ProfilePage from "./Pages/ProfilePage";
 import RegisterPage from "./Pages/RegisterPage";
 import ProtectedRoute from "./protectedRoutes";
 import { Toaster } from "react-hot-toast";
+import ShareNotePage from "./Pages/ShareNotePage";
 const App = () => {
   const {
     isAuthenticated,
@@ -25,6 +26,8 @@ const App = () => {
     setTrashedNotes,
     isLoading,
     setIsLoading,
+    sharedNotes,
+    setSharedNotes,
   } = useContext(Context);
 
   useEffect(() => {
@@ -84,10 +87,24 @@ const App = () => {
         setFolders([]);
       }
     };
+    const getNotes = async () => {
+      try {
+        const { data } = await axios.get(
+          "https://noti-fy-backend.onrender.com/api/v1/note/shared-with-me",
+          { withCredentials: true }
+        );
+        setSharedNotes(data.notes);
+        console.log(sharedNotes);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     if (isAuthenticated) {
       fetchUser();
       fetchNotes();
       fetchFolders();
+      getNotes();
     }
   }, [isAuthenticated]);
 
@@ -103,6 +120,7 @@ const App = () => {
             <Route path="/folder/:name/:id" element={<FolderPage />} />
             <Route path="/trash" element={<TrashPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/shared" element={<ShareNotePage />} />
           </Route>
         </Routes>
       </Router>

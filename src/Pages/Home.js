@@ -7,20 +7,23 @@ import {
   faBook,
   faUser,
   faDoorClosed,
+  faShareAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddNoteModal from "../Components/AddNoteModal";
 import { useContext, useEffect, useState } from "react";
 import { AddFolder } from "../Components/FolderBody";
 import AddFolderModal from "../Components/AddFolderModal";
-import { LogOut } from "lucide-react";
+import { LogOut, Share2 } from "lucide-react";
 import { Context } from "../index.js";
 import axios from "axios";
 import toast from "react-hot-toast";
+import SharewithModal from "../Components/SharewithModal.js";
 
 const Home = () => {
   const [AddNote, setAddNote] = useState(false);
   const [AddFolder, setAddFolder] = useState(false);
+  const [AddShare, setAddShare] = useState(false);
   const [loading, setLoading] = useState(true);
   const { setIsAuthenticated, isAuthenticated } = useContext(Context);
   const navigateTo = useNavigate();
@@ -65,10 +68,16 @@ const Home = () => {
               text="Profile"
             />
           </Link>
+          <Link to={"/shared"}>
+            <SidebarItem
+              icon={<FontAwesomeIcon icon={faShareAlt} />}
+              text="Shared"
+            />
+          </Link>
           <Link to={"/archieve"}>
             <SidebarItem
               icon={<FontAwesomeIcon icon={faBook} />}
-              text="Archieve"
+              text="Archive"
             />
           </Link>
           <Link to={"/trash"}>
@@ -84,9 +93,11 @@ const Home = () => {
         <MainBody
           onOpen={() => setAddNote(true)}
           onOpenFolder={() => setAddFolder(true)}
+          // onOpenShare={() => setAddShare(true)}
         />
         {AddNote && <AddNoteModal onClose={() => setAddNote(false)} />}
         {AddFolder && <AddFolderModal onClose={() => setAddFolder(false)} />}
+        {/* {AddShare && <SharewithModal onClose={() => setAddShare(false)} />} */}
       </div>
     </>
   );

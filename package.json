@@ -4,8 +4,8 @@
   "description": "frontend for notes app",
   "scripts": {
     "test": "jest",
-    "start": "parcel index.html && parcel watch index.html"
-    
+    "start": "parcel index.html && parcel watch index.html",
+    "build": "parcel build"
   },
   "author": "sujal",
   "license": "ISC",

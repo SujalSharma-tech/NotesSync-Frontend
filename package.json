@@ -5,6 +5,7 @@
   "scripts": {
     "test": "jest",
     "start": "parcel index.html && parcel watch index.html"
+    
   },
   "author": "sujal",
   "license": "ISC",

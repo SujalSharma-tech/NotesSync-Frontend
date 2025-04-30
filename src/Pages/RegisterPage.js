@@ -19,7 +19,7 @@ const RegisterPage = () => {
     setIsLoading(true);
     try {
       const { data } = await axios.post(
-        "https://noti-fy-backend.onrender.com/api/v1/user/register",
+        "https://notessync-backend-281766668774.herokuapp.com/api/v1/user/register",
         { name, email, password },
         { withCredentials: true }
       );

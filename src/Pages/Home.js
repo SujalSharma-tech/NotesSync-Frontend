@@ -30,7 +30,7 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(
-        "https://noti-fy-backend.onrender.com/api/v1/user/logout",
+        "https://notessync-backend-281766668774.herokuapp.com/api/v1/user/logout",
         { withCredentials: true }
       );
 

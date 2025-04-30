@@ -23,7 +23,7 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
   const togglePinned = async () => {
     try {
       const { data } = await axios.patch(
-        `https://noti-fy-backend.onrender.com/api/v1/note/updatestatus/${note._id}`,
+        `https://notessync-backend-281766668774.herokuapp.com/api/v1/note/updatestatus/${note._id}`,
         { isPinned: !isPinned },
         {
           withCredentials: true,
@@ -38,7 +38,7 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
   const toggleArchived = async () => {
     try {
       const { data } = await axios.patch(
-        `https://noti-fy-backend.onrender.com/api/v1/note/updatestatus/${note._id}`,
+        `https://notessync-backend-281766668774.herokuapp.com/api/v1/note/updatestatus/${note._id}`,
         { isArchived: !isArchived },
         {
           withCredentials: true,
@@ -53,7 +53,7 @@ const NoteBody = ({ note, onUpdate, onDelete }) => {
   const toggleDelete = async () => {
     try {
       const { data } = await axios.patch(
-        `https://noti-fy-backend.onrender.com/api/v1/note/updatestatus/${note._id}`,
+        `https://notessync-backend-281766668774.herokuapp.com/api/v1/note/updatestatus/${note._id}`,
         { isTrashed: true },
         {
           withCredentials: true,

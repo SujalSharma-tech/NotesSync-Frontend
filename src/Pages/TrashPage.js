@@ -62,7 +62,7 @@ const TrashPage = () => {
   const handleNoteRestore = async (noteId) => {
     try {
       const { data } = await axios.patch(
-        `http://localhost:4000/api/v1/note/${noteId}/restore`,
+        `https://notessync-backend-281766668774.herokuapp.com/api/v1/note/${noteId}/restore`,
         { isTrashed: false },
         { withCredentials: true }
       );
@@ -77,7 +77,7 @@ const TrashPage = () => {
   const handleNoteDelete = async (noteId) => {
     try {
       const { data } = await axios.delete(
-        `http://localhost:4000/api/v1/note/deletenote/${noteId}`,
+        `https://notessync-backend-281766668774.herokuapp.com/api/v1/note/deletenote/${noteId}`,
         { withCredentials: true }
       );
       // setNotes((prev) => [data.note, ...prev]);
@@ -92,7 +92,7 @@ const TrashPage = () => {
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:4000/api/v1/user/logout",
+        "https://notessync-backend-281766668774.herokuapp.com/api/v1/user/logout",
         { withCredentials: true }
       );
 
@@ -118,7 +118,7 @@ const TrashPage = () => {
       });
       const { data } = await await axios.request({
         method: "DELETE",
-        url: "http://localhost:4000/api/v1/note/deleteall",
+        url: "https://notessync-backend-281766668774.herokuapp.com/api/v1/note/deleteall",
         data: { id: ids },
         withCredentials: true,
       });

@@ -31,6 +31,7 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent, allowedEdit }) => {
   const [isArchiving, setIsArchiving] = useState(false);
   const [isPinning, setIsPinning] = useState(false);
   const [AddShare, setAddShare] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { mode } = useContext(Context);
 
   const togglePinned = async (e) => {
@@ -115,6 +116,7 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent, allowedEdit }) => {
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
     try {
       const { data } = await axios.put(
         `https://noti-fy-backend.onrender.com/api/v1/note/updatenote/${note._id}`,
@@ -124,10 +126,12 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent, allowedEdit }) => {
         }
       );
       onUpdate(data.note);
+      setIsLoading(false);
       toast.success(data.message);
       closeModal();
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
       toast.error(err.response.data.message);
     }
   };
@@ -163,9 +167,18 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent, allowedEdit }) => {
               >
                 <div className="note_share dark:text-white">
                   <span className="tooltip">Share</span>
-                  {<Share2 fill={note.isShared ? "black" : "none"} />}
+                  {
+                    <Share2
+                      fill={
+                        note.isShared
+                          ? mode == "light"
+                            ? "black"
+                            : "white"
+                          : "none"
+                      }
+                    />
+                  }
                 </div>
-                {isDeleting && <div className="loader"></div>}
               </button>
               <button
                 className="note_pin_button note_action_button"
@@ -306,7 +319,8 @@ const NoteBody = ({ note, onUpdate, onDelete, hideContent, allowedEdit }) => {
                     className="bg-blue-500 text-white px-4 py-2 rounded"
                     onClick={handleSave}
                   >
-                    Save
+                    <span className={isLoading ? "hidden" : ""}>Save</span>
+                    {isLoading && <div className="loader"></div>}
                   </button>
                 </div>
               </>

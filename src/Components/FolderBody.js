@@ -121,12 +121,6 @@ export const AddFolder = ({ onOpenFolder }) => {
   return (
     <>
       <div className="flex  gap-6 justify-center">
-        {/* <button className="add_note">
-          <div className="add_note_body w-[130px] h-[130px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed border-gray-400 hover:bg-slate-200 transition duration-500 dark:text-white dark:hover:text-black ">
-            <FontAwesomeIcon icon={faFolder} size="2x" />
-            <h1 className="text-md text-center">View All</h1>
-          </div>
-        </button> */}
         <button className="add_folder" onClick={onOpenFolder}>
           <div className="add_folder_body h-[180px] w-[150px] sm:w-[250px] sm:h-[140px] rounded-xl flex justify-center items-center flex-col gap-3 border-2 border-dashed  border-gray-400 hover:bg-slate-200 transition duration-500 z-10 dark:text-white dark:hover:text-black">
             <FontAwesomeIcon icon={faPlus} size="2x" />

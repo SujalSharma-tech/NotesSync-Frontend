@@ -47,10 +47,8 @@ const ShareNotePage = () => {
   const [showShared, setshowShared] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const filterNotes = (shared, search) => {
-    let filteredNotes = Notes;
-    if (shared) {
-      filteredNotes = sharedNotes;
-    }
+    let filteredNotes = shared;
+
     if (search) {
       filteredNotes = filteredNotes.filter(
         (note) =>
@@ -62,7 +60,7 @@ const ShareNotePage = () => {
     return filteredNotes;
   };
 
-  const filteredNotes = filterNotes(showShared, searchTerm);
+  const filteredNotes = filterNotes(sharedNotes, searchTerm);
 
   const handleLogout = async () => {
     try {
@@ -141,8 +139,8 @@ const ShareNotePage = () => {
             <SkeletonComponent />
           ) : (
             <div className="notes-container mt-5 flex gap-3 sm:gap-[25px] flex-wrap sm:justify-normal justify-center">
-              {filteredNotes && filteredNotes.length > 0 ? (
-                filteredNotes.map((note) => {
+              {sharedNotes && sharedNotes.length > 0 ? (
+                sharedNotes.map((note) => {
                   return (
                     <NoteBody
                       key={note._id}

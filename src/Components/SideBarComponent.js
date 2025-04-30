@@ -3,13 +3,16 @@ import userLogo from "../assets/logouser.png";
 import { ChevronFirst } from "lucide-react";
 const SidebarContext = createContext();
 import { createContext, useState } from "react";
+import { Link } from "react-router-dom";
 const SideBarComponent = ({ children }) => {
   return (
     <>
       <aside className="h-screen hidden sm:block dark:bg-[#3C3D43] dark:text-white">
         <nav className="h-full flex flex-col  shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
-            <img src={AppLogo} className="w-32" alt="" />
+            <Link to={"/"}>
+              <img src={AppLogo} className="w-32" alt="" />
+            </Link>
           </div>
           <ul className="flex-1 gap-2 px-3 mt-5 ">{children}</ul>
         </nav>

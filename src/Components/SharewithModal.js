@@ -3,29 +3,34 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { Context } from "../index";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 const SharewithModal = ({ onClose, note, onUpdate }) => {
   const [email, setEmail] = useState("");
-  const { user, Notes, setNotes, setSharedNotes } = useContext(Context);
+  const { user, Notes, setNotes, setSharedNotes, sharedNotes } =
+    useContext(Context);
   const [SearchResults, setSearchResults] = useState([]);
-  const navigateTo = useNavigate();
+  const [isSearching, setIsSearching] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   const handleSearch = async () => {
+    setIsSearching(true);
     try {
       const { data } = await axios.get(
         `https://noti-fy-backend.onrender.com/api/v1/note/searchuser?email=${email}`,
         { withCredentials: true }
       );
       setSearchResults([data.user]);
+      setIsSearching(false);
       toast.success("User Found!");
     } catch (err) {
       console.log(err);
       setSearchResults([]);
+      setIsSearching(false);
       toast.error(err?.response.data.message);
     }
   };
-  const handleShare = async (user, remove) => {
+  const handleShare = async (user, remove = false) => {
+    setIsSharing(true);
     let removeUser = remove;
     if (note.isShared) {
       user._id = user.userId;
@@ -47,10 +52,18 @@ const SharewithModal = ({ onClose, note, onUpdate }) => {
         },
         { withCredentials: true }
       );
-      const updatedNotes = Notes.map((note) =>
+      const updatedNotes = sharedNotes.map((note) =>
         note._id === data.note._id ? data.note : note
       );
       onUpdate(data.note);
+
+      setSharedNotes((prev) =>
+        prev.filter((curr) => {
+          if (curr._id != data.note._id) return curr;
+        })
+      );
+
+      setIsSharing(false);
       if (!removeUser) {
         toast.success("Note Shared!");
       } else {
@@ -58,9 +71,9 @@ const SharewithModal = ({ onClose, note, onUpdate }) => {
         onClose();
       }
       setSearchResults([]);
-      setNotes(updatedNotes);
     } catch (err) {
       console.log(err);
+      setIsSharing(false);
       toast.error(err?.response.data.message);
     }
   };
@@ -96,7 +109,8 @@ const SharewithModal = ({ onClose, note, onUpdate }) => {
                 className="outline-none border-2 bg-pink-400 px-[10px] py-[12px] rounded-xl dark:border-[#2b2d30] text-white "
                 onClick={handleSearch}
               >
-                Search
+                <span className={isSearching ? "hidden" : ""}>Search</span>
+                {isSearching && <div className="loader"></div>}
               </button>
             </div>
           ) : (
@@ -112,9 +126,10 @@ const SharewithModal = ({ onClose, note, onUpdate }) => {
               </h1>
               <button
                 className="sm:text-xl text-sm bg-[#6cb4dd] outline-none border-2  px-[10px] py-[12px] rounded-xl dark:border-[#2b2d30] text-white"
-                onClick={() => handleShare(SearchResults[0], (remove = false))}
+                onClick={() => handleShare(SearchResults[0], false)}
               >
-                Share Note
+                <span className={isSharing ? "hidden" : ""}>Share Note</span>
+                {isSharing && <div className="loader"></div>}
               </button>
             </div>
           ) : (
@@ -150,11 +165,7 @@ const SharewithModal = ({ onClose, note, onUpdate }) => {
                         </h1>
                         {noteUser.email === user.email ||
                         note.owner === user.email ? (
-                          <button
-                            onClick={() =>
-                              handleShare(noteUser, (remove = true))
-                            }
-                          >
+                          <button onClick={() => handleShare(noteUser, true)}>
                             <X color="red" />
                           </button>
                         ) : (

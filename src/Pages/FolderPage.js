@@ -14,10 +14,12 @@ import NoteBody from "../Components/NoteBody";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useContext, useEffect } from "react";
 import { Context } from "../index";
-import { ArrowLeft, LogOut } from "lucide-react";
+import { ArrowLeft, LogOut, Smile } from "lucide-react";
 import SelectNotemodal from "../Components/SelectNoteModal";
 import AddNoteModal from "../Components/AddNoteModal";
 import toast from "react-hot-toast";
+import FolderSkeleton from "../Components/FolderSkeleton";
+import SkeletonComponent from "../Components/SkeletonComponent";
 
 const Dropdown = ({ onOpen, onNoteOpen, id }) => {
   return (
@@ -46,6 +48,7 @@ const FolderPage = () => {
     handleNoteDelete,
     setIsAuthenticated,
     isAuthenticated,
+    isLoading,
   } = useContext(Context);
   const { name, id } = useParams();
   const navigateTo = useNavigate();
@@ -143,22 +146,27 @@ const FolderPage = () => {
             </div>
           </div>
 
-          <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-start">
-            {filteredNotes && filteredNotes.length > 0 ? (
-              filteredNotes.map((note) => {
-                return (
-                  <NoteBody
-                    key={note._id}
-                    note={note}
-                    onUpdate={handleNoteUpdate}
-                    onDelete={handleNoteDelete}
-                  />
-                );
-              })
-            ) : (
-              <h1 className="text-2xl dark:text-white">Empty Folder</h1>
-            )}
-          </div>
+          {isLoading ? (
+            <SkeletonComponent />
+          ) : (
+            <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-start">
+              {filteredNotes && filteredNotes.length > 0 ? (
+                filteredNotes.map((note) => {
+                  return (
+                    <NoteBody
+                      key={note._id}
+                      note={note}
+                      onUpdate={handleNoteUpdate}
+                      onDelete={handleNoteDelete}
+                      allowedEdit={true}
+                    />
+                  );
+                })
+              ) : (
+                <h1 className="text-2xl dark:text-white">Empty Folder</h1>
+              )}
+            </div>
+          )}
         </div>
       </div>
       {AddNote && <SelectNotemodal onClose={() => setAddNote(false)} />}

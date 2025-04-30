@@ -7,9 +7,11 @@ import toast from "react-hot-toast";
 const AddFolderModal = ({ onClose }) => {
   const [name, setName] = useState("");
   const { setFolders } = useContext(Context);
+  const [isLoading, setIsLoading] = useState(false);
 
   const addNewFolder = async () => {
     const newFolder = { name };
+    setIsLoading(true);
     try {
       const { data } = await axios.post(
         "https://noti-fy-backend.onrender.com/api/v1/folder/newfolder",
@@ -18,11 +20,12 @@ const AddFolderModal = ({ onClose }) => {
           withCredentials: true,
         }
       );
-      console.log(data);
       toast.success("Folder Added!");
+      setIsLoading(false);
       setFolders((prevFolder) => [data.folder, ...prevFolder]);
       onClose();
     } catch (err) {
+      setIsLoading(false);
       console.log(err);
       toast.error(err?.response.data.message);
     }
@@ -52,7 +55,8 @@ const AddFolderModal = ({ onClose }) => {
             className="outline-none border-2 bg-[#6cb4dd] px-[10px] py-[12px] rounded-xl dark:border-[#2b2d30]"
             onClick={addNewFolder}
           >
-            Add Folder +
+            <span className={isLoading ? "hidden" : ""}>Add Folder +</span>
+            {isLoading && <div className="loader"></div>}
           </button>
         </div>
       </div>

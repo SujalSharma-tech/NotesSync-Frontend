@@ -22,6 +22,7 @@ import DeletedNote from "../Components/DeletedNote";
 import axios from "axios";
 import SelectArchiveModal from "../Components/SelectArchiveModal";
 import toast from "react-hot-toast";
+import SkeletonComponent from "../Components/SkeletonComponent";
 
 const Dropdown = ({ onOpen, onNoteOpen }) => {
   return (
@@ -49,6 +50,7 @@ const ArchievePage = () => {
     setTrashedNotes,
     setIsAuthenticated,
     isAuthenticated,
+    isLoading,
   } = useContext(Context);
   const { name, id } = useParams();
   const navigateTo = useNavigate();
@@ -185,23 +187,27 @@ const ArchievePage = () => {
             </div>
           </div>
 
-          <div className="notes-container mt-5 flex gap-3 sm:gap-[25px] flex-wrap sm:justify-normal justify-center">
-            {filteredNotes && filteredNotes.length > 0 ? (
-              filteredNotes.map((note) => {
-                return (
-                  <NoteBody
-                    key={note._id}
-                    note={note}
-                    onUpdate={handleNoteUpdate}
-                    onDelete={handleNoteDelete}
-                    allowedEdit={true}
-                  />
-                );
-              })
-            ) : (
-              <h1 className="text-2xl dark:text-white">No Notes Found</h1>
-            )}
-          </div>
+          {isLoading ? (
+            <SkeletonComponent />
+          ) : (
+            <div className="notes-container mt-5 flex gap-3 sm:gap-[25px] flex-wrap sm:justify-normal justify-center">
+              {filteredNotes && filteredNotes.length > 0 ? (
+                filteredNotes.map((note) => {
+                  return (
+                    <NoteBody
+                      key={note._id}
+                      note={note}
+                      onUpdate={handleNoteUpdate}
+                      onDelete={handleNoteDelete}
+                      allowedEdit={true}
+                    />
+                  );
+                })
+              ) : (
+                <h1 className="text-2xl dark:text-white">No Notes Found</h1>
+              )}
+            </div>
+          )}
         </div>
       </div>
       {AddNote && (

@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import HamburgerMenu from "./HamburgerMenu";
 import { Link } from "react-router-dom";
 import { Context } from "../index.js";
+import githubIcon from "../assets/github.png";
 const HeaderComponent = ({ onSearch }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { mode, setMode, user } = useContext(Context);
@@ -29,11 +30,12 @@ const HeaderComponent = ({ onSearch }) => {
     <div className="bg-white dark:bg-[#3C3D43] dark:text-white h-14 text-black container px-4 flex">
       <div className="navbar flex justify-evenly w-full">
         <div className="navbar-center flex justify-between px-3 sm:px-6 w-full items-center">
-          <Link to={"/"}>
-            <div className="navbar-title text-xl sm:text-3xl font-normal">
-              MY NOTES
-            </div>
-          </Link>
+          <div className="navbar-title text-xl sm:text-3xl font-normal">
+            <a href="https://github.com/SujalSharma-tech" target="_blank">
+              <img src={githubIcon} className="dark:invert" width={35} />
+            </a>
+          </div>
+
           <div className="navbar-search flex items-center rounded-lg w-[35%] gap-2">
             <Search stroke={"gray"} />
             <input

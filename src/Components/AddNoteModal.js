@@ -7,11 +7,13 @@ const AddNoteModal = ({ onClose, id, onNoteAdded }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const { setNotes, user } = useContext(Context);
+  const [isLoading, setIsLoading] = useState(false);
   const owner = user.email;
 
   const addnewNote = async () => {
     const newNote = { title, content, owner };
     try {
+      setIsLoading(true);
       const { data } = await axios.post(
         "https://noti-fy-backend.onrender.com/api/v1/note/addnote",
         newNote,
@@ -19,7 +21,7 @@ const AddNoteModal = ({ onClose, id, onNoteAdded }) => {
           withCredentials: true,
         }
       );
-      console.log(data);
+      setIsLoading(false);
       toast.success("Note Added!");
       setNotes((prevNote) => [data.note, ...prevNote]);
       if (id) {
@@ -36,6 +38,7 @@ const AddNoteModal = ({ onClose, id, onNoteAdded }) => {
       }
       onClose();
     } catch (err) {
+      setIsLoading(false);
       console.log(err);
       toast.error(err?.response?.data?.message);
     }
@@ -72,7 +75,8 @@ const AddNoteModal = ({ onClose, id, onNoteAdded }) => {
             className="outline-none border-2 bg-[#6cb4dd] px-[10px] py-[12px] rounded-xl dark:border-[#2b2d30]"
             onClick={addnewNote}
           >
-            Add Note +
+            <span className={isLoading ? "hidden" : ""}>Add Node +</span>
+            {isLoading && <div className="loader"></div>}
           </button>
         </div>
       </div>

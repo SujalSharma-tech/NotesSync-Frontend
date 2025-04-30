@@ -20,6 +20,7 @@ import AddNoteModal from "../Components/AddNoteModal";
 import DeletedNote from "../Components/DeletedNote";
 import axios from "axios";
 import toast from "react-hot-toast";
+import SkeletonComponent from "../Components/SkeletonComponent";
 
 const Dropdown = ({ onOpen, onNoteOpen, id }) => {
   return (
@@ -41,6 +42,8 @@ const TrashPage = () => {
   const [filteredNotes, setfilteredNotes] = useState([]);
   const [AddNote, setAddNote] = useState(false);
   const [AddNoteOpen, setAddNoteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isRecovering, setIsRecovering] = useState(false);
   const {
     setNotes,
     TrashedNotes,
@@ -48,6 +51,7 @@ const TrashPage = () => {
     setIsAuthenticated,
     setUser,
     isAuthenticated,
+    isLoading,
   } = useContext(Context);
   const { name, id } = useParams();
   const navigateTo = useNavigate();
@@ -62,37 +66,41 @@ const TrashPage = () => {
   const handleNoteRestore = async (noteId) => {
     try {
       const { data } = await axios.patch(
-        `http://localhost:4000/api/v1/note/${noteId}/restore`,
+        `https://noti-fy-backend.onrender.com/api/v1/note/${noteId}/restore`,
         { isTrashed: false },
         { withCredentials: true }
       );
       toast.success("Note Restored!");
+
       setNotes((prev) => [data.note, ...prev]);
       setTrashedNotes((prev) => prev.filter((note) => note._id !== noteId));
     } catch (error) {
       console.error("Error restoring note:", error);
+
       toast.error(error?.response.data.message);
     }
   };
   const handleNoteDelete = async (noteId) => {
     try {
       const { data } = await axios.delete(
-        `http://localhost:4000/api/v1/note/deletenote/${noteId}`,
+        `https://noti-fy-backend.onrender.com/api/v1/note/deletenote/${noteId}`,
         { withCredentials: true }
       );
       // setNotes((prev) => [data.note, ...prev]);
       toast.success("Note Deleted!");
+
       setNotes((prev) => prev.filter((note) => note._id !== noteId));
       setTrashedNotes((prev) => prev.filter((note) => note._id !== noteId));
     } catch (error) {
       console.error("Error Deleting note:", error);
+
       toast.error(error?.response.data.message);
     }
   };
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:4000/api/v1/user/logout",
+        "https://noti-fy-backend.onrender.com/api/v1/user/logout",
         { withCredentials: true }
       );
 
@@ -118,7 +126,7 @@ const TrashPage = () => {
       });
       const { data } = await await axios.request({
         method: "DELETE",
-        url: "http://localhost:4000/api/v1/note/deleteall",
+        url: "https://noti-fy-backend.onrender.com/api/v1/note/deleteall",
         data: { id: ids },
         withCredentials: true,
       });
@@ -202,22 +210,26 @@ const TrashPage = () => {
             </div>
           </div>
 
-          <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-normal">
-            {filteredNotes && filteredNotes.length > 0 ? (
-              filteredNotes.map((note) => {
-                return (
-                  <DeletedNote
-                    key={note._id}
-                    note={note}
-                    onNoteRestore={handleNoteRestore}
-                    onNoteDelete={handleNoteDelete}
-                  />
-                );
-              })
-            ) : (
-              <h1 className="text-2xl dark:text-white">Empty Folder</h1>
-            )}
-          </div>
+          {isLoading ? (
+            <SkeletonComponent />
+          ) : (
+            <div className="notes-container mt-5 flex gap-[15px] sm:gap-[25px] flex-wrap justify-center sm:justify-normal">
+              {filteredNotes && filteredNotes.length > 0 ? (
+                filteredNotes.map((note) => {
+                  return (
+                    <DeletedNote
+                      key={note._id}
+                      note={note}
+                      onNoteRestore={handleNoteRestore}
+                      onNoteDelete={handleNoteDelete}
+                    />
+                  );
+                })
+              ) : (
+                <h1 className="text-2xl dark:text-white">Empty Folder</h1>
+              )}
+            </div>
+          )}
         </div>
       </div>
       {AddNote && <SelectNotemodal onClose={() => setAddNote(false)} />}

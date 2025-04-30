@@ -41,7 +41,6 @@ const App = () => {
         );
         if (data) {
           setUser(data.user);
-          console.log(data.user);
           setIsAuthenticated(true);
         }
       } catch (err) {
@@ -61,13 +60,12 @@ const App = () => {
           }
         );
         const allNotes = data.notes;
-        console.log(allNotes);
+
         const notTrashed = allNotes.filter((note) => !note.isTrashed);
         const Trashed = allNotes.filter((note) => note.isTrashed);
         setNotes(notTrashed);
         setIsLoading(false);
         setTrashedNotes(Trashed);
-        console.log(data.notes);
       } catch (error) {
         setNotes([]);
         setIsLoading(false);
@@ -82,7 +80,6 @@ const App = () => {
           }
         );
         setFolders(data.folders);
-        console.log(data.folders);
       } catch (error) {
         setFolders([]);
       }
@@ -94,7 +91,6 @@ const App = () => {
           { withCredentials: true }
         );
         setSharedNotes(data.notes);
-        console.log(sharedNotes);
       } catch (err) {
         console.log(err);
       }
@@ -112,7 +108,7 @@ const App = () => {
     <>
       <Router>
         <Routes>
-          <Route path="/login" element={<Loginpage />} />{" "}
+          <Route path="/login" element={<Loginpage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />

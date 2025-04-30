@@ -196,14 +196,6 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
           >
             Today
           </button>
-          {/* <button
-            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
-              selectedRange === "week" ? "text-black dark:text-white" : ""
-            }`}
-            onClick={() => handleRangeClick("week")}
-          >
-            This Week
-          </button> */}
           <button
             className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
               selectedRange === "month" ? "text-black dark:text-white" : ""
@@ -238,7 +230,9 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
                 );
               })
             ) : (
-              <h1 className="text-2xl dark:text-white">No Notes Available</h1>
+              <h1 className="text-2xl dark:text-white">
+                No Notes Here... Change Range
+              </h1>
             )}
           </div>
         )}
@@ -274,14 +268,6 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
           >
             Today
           </button>
-          {/* <button
-            className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
-              selectedFolderRange === "week" ? "text-black dark:text-white" : ""
-            }`}
-            onClick={() => handleFolderRangeClick("week")}
-          >
-            This Week
-          </button> */}
           <button
             className={`text-[#CCCDCF] dark:hover:text-white hover:text-black transition duration-500 ${
               selectedFolderRange === "month"
@@ -316,7 +302,9 @@ const MainBody = ({ onOpen, onOpenFolder }) => {
                 );
               })
             ) : (
-              <h1 className="text-2xl dark:text-white">No Folders Available</h1>
+              <h1 className="text-2xl dark:text-white">
+                No Folders Here... Change Range
+              </h1>
             )}
           </div>
         )}
